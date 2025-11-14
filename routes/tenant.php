@@ -38,14 +38,18 @@ Route::middleware('api')
                 // LeaveReviewFeature - Customer operations
                 Route::post('review-product', [ReviewController::class, 'reviewProduct'])
                     ->middleware('tenant.has.feature:leave-reviews');
+
             });
 
         });
 
         // Reviewable endpoints - decoupled from specific reviewable types
         Route::prefix('reviewables')->group(function(){
-            Route::middleware(['tenant.user'])->group(function(){
+            Route::middleware(['tenant.user', 'tenant.has.feature:manage-reviews'])->group(function(){
                 Route::get('products', [ReviewableController::class, 'products']);
+                Route::get('/products/{reviewable_id}/can-review', [ReviewController::class, 'canReviewProduct'])->middleware('tenant.has.feature:leave-reviews');
             });
+
+            Route::get('/products/{reviewable_id}/reviews', [ReviewableController::class, 'productReviews'])->middleware('tenant.has.feature:leave-reviews');
         });
     });

@@ -43,4 +43,25 @@ class ReviewController extends Controller {
         return Response::api(data: $review, message: __('Product reviewed successfully'));
     }
 
+    public function canReviewProduct(Request $request, int $reviewable_id): JsonResponse {
+        $user = AuthHelper::getUser();
+        $productModelClass = config('reviews.product_model');
+
+        if(!class_exists($productModelClass)) {
+            abort(404, __('Product Model Class not found'));
+        }
+
+        $reviewable = $productModelClass::findOrFail($reviewable_id);
+
+        $verifier = App::make('reviews.product_verifier');
+
+        $canReview = $verifier->canReview($user, $reviewable);
+
+        if(!$canReview) {
+            return Response::api(data: null, message: $verifier->getFailedMessage(), code: 400);
+        }
+
+        return Response::api(data: null, message: __('User can review this product.'));
+    }
+
 }

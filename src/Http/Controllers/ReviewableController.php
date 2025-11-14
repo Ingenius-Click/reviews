@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
 use Ingenius\Core\Helpers\AuthHelper;
+use Ingenius\Reviews\Actions\GetReviewableReviewsAction;
 use Ingenius\Reviews\Actions\ListReviewableProductsAction;
 use Ingenius\Reviews\Http\Resources\ReviewableProductResource;
 use Ingenius\Reviews\Models\Review;
@@ -40,6 +41,17 @@ class ReviewableController extends Controller
             data: $reviewableProducts,
             message: 'Reviewable products fetched successfully'
         );
+    }
+
+    public function productReviews(Request $request, int $reviewable_id, GetReviewableReviewsAction $action): JsonResponse {
+
+        $productModelClass = config('reviews.product_model');
+
+        $reviewable = $productModelClass::findOrFail($reviewable_id);
+
+        $paginated = $action->handle($reviewable, $request->all());
+
+        return Response::api(data: $paginated, message: __("Reviewable reviews fetched successfully."));
     }
 
     // Future methods can be added here for other reviewable types:

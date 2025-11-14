@@ -25,10 +25,19 @@ Route::middleware('api')
         Route::prefix('reviews')->group(function(){
 
             Route::middleware(['tenant.user'])->group(function(){
-                Route::get('/', [ReviewCrudController::class, 'index']);
-                Route::post('review-product', [ReviewController::class, 'reviewProduct']);
-                Route::post('/{review}/approve', [ReviewCrudController::class, 'approve']);
-                Route::post('/{review}/reject', [ReviewCrudController::class, 'reject']);
+                // ManageReviewFeature - Admin operations
+                Route::get('/', [ReviewCrudController::class, 'index'])
+                    ->middleware('tenant.has.feature:manage-reviews');
+                Route::post('/{review}/approve', [ReviewCrudController::class, 'approve'])
+                    ->middleware('tenant.has.feature:manage-reviews');
+                Route::post('/{review}/reject', [ReviewCrudController::class, 'reject'])
+                    ->middleware('tenant.has.feature:manage-reviews');
+                Route::delete('/{review}', [ReviewCrudController::class, 'destroy'])
+                    ->middleware('tenant.has.feature:manage-reviews');
+
+                // LeaveReviewFeature - Customer operations
+                Route::post('review-product', [ReviewController::class, 'reviewProduct'])
+                    ->middleware('tenant.has.feature:leave-reviews');
             });
 
         });

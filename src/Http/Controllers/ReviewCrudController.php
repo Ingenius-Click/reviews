@@ -58,4 +58,14 @@ class ReviewCrudController extends Controller {
         return Response::api(data: $r, message: __('Review rejected successfully.'));
     }
 
+    public function destroy(Request $request, Review $review): JsonResponse {
+
+        $user = \Ingenius\Core\Helpers\AuthHelper::getUser();
+        $this->authorizeForUser($user, 'delete', $review);
+
+        $review->delete();
+
+        return Response::api(message: __('Review deleted successfully.'));
+    }
+
 }

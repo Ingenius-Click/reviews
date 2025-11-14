@@ -5,8 +5,11 @@ namespace Ingenius\Reviews\Providers;
 use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Traits\RegistersMigrations;
 use Ingenius\Core\Traits\RegistersConfigurations;
+use Ingenius\Core\Services\FeatureManager;
 use Ingenius\Products\Services\ProductExtensionManager;
 use Ingenius\Reviews\Extensions\ReviewsProductExtension;
+use Ingenius\Reviews\Features\LeaveReviewFeature;
+use Ingenius\Reviews\Features\ManageReviewFeature;
 
 class ReviewsServiceProvider extends ServiceProvider
 {
@@ -44,6 +47,12 @@ class ReviewsServiceProvider extends ServiceProvider
         // Register the product extension
         $this->app->afterResolving(ProductExtensionManager::class, function (ProductExtensionManager $manager) {
             $manager->register(new ReviewsProductExtension());
+        });
+
+        // Register features
+        $this->app->afterResolving(FeatureManager::class, function (FeatureManager $manager) {
+            $manager->register(new ManageReviewFeature());
+            $manager->register(new LeaveReviewFeature());
         });
     }
 

@@ -18,7 +18,7 @@ class ReviewController extends Controller {
         $validated = $request->validate([
             'product_id' => 'required|integer',
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string'
+            'comment' => 'required|string'
         ]);
 
         $user = AuthHelper::getUser();

@@ -6,10 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Traits\RegistersMigrations;
 use Ingenius\Core\Traits\RegistersConfigurations;
 use Ingenius\Core\Services\FeatureManager;
-use Ingenius\Products\Services\ProductExtensionManager;
-use Ingenius\Reviews\Extensions\ReviewsProductExtension;
+use Ingenius\Core\Services\PackageHookManager;
 use Ingenius\Reviews\Features\LeaveReviewFeature;
 use Ingenius\Reviews\Features\ManageReviewFeature;
+use Ingenius\Reviews\Services\ProductReviewStatsService;
 
 class ReviewsServiceProvider extends ServiceProvider
 {
@@ -44,15 +44,24 @@ class ReviewsServiceProvider extends ServiceProvider
             return new $verifierClass();
         });
 
-        // Register the product extension
-        $this->app->afterResolving(ProductExtensionManager::class, function (ProductExtensionManager $manager) {
-            $manager->register(new ReviewsProductExtension());
-        });
-
         // Register features
         $this->app->afterResolving(FeatureManager::class, function (FeatureManager $manager) {
             $manager->register(new ManageReviewFeature());
             $manager->register(new LeaveReviewFeature());
+        });
+
+        // Register the product review stats service as a singleton
+        $this->app->singleton(ProductReviewStatsService::class);
+
+        // Register hook to extend product arrays with review statistics
+        $this->app->afterResolving(PackageHookManager::class, function (PackageHookManager $manager) {
+            $statsService = $this->app->make(ProductReviewStatsService::class);
+
+            $manager->register(
+                'product.array.extend',
+                [$statsService, 'extendProductArray'],
+                50
+            );
         });
     }
 

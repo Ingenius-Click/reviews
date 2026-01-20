@@ -51,8 +51,8 @@ class PermissionsServiceProvider extends ServiceProvider {
             'View reviews',
             $this->packageName,
             'tenant',
-            'View reviews',
-            'Reviews'
+            __('reviews::permissions.display_names.view_reviews'),
+            __('reviews::permissions.groups.reviews')
         );
 
         $permissionsManager->register(
@@ -60,8 +60,8 @@ class PermissionsServiceProvider extends ServiceProvider {
             'Approve reviews',
             $this->packageName,
             'tenant',
-            'Approve reviews',
-            'Reviews'
+            __('reviews::permissions.display_names.approve_reviews'),
+            __('reviews::permissions.groups.reviews')
         );
 
         $permissionsManager->register(
@@ -69,8 +69,8 @@ class PermissionsServiceProvider extends ServiceProvider {
             'Reject reviews',
             $this->packageName,
             'tenant',
-            'Reject reviews',
-            'Reviews'
+            __('reviews::permissions.display_names.reject_reviews'),
+            __('reviews::permissions.groups.reviews')
         );
 
         $permissionsManager->register(
@@ -78,8 +78,8 @@ class PermissionsServiceProvider extends ServiceProvider {
             'Delete reviews',
             $this->packageName,
             'tenant',
-            'Delete reviews',
-            'Reviews'
+            __('reviews::permissions.display_names.delete_reviews'),
+            __('reviews::permissions.groups.reviews')
         );
     }
 

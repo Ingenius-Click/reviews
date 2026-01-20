@@ -25,6 +25,9 @@ class ReviewsServiceProvider extends ServiceProvider
         // Register configuration with the registry
         $this->registerConfig(__DIR__.'/../../config/reviews.php', 'reviews', 'reviews');
 
+        // Load translations early so they're available for permission registration
+        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'reviews');
+
         // Register the route service provider
         $this->app->register(RouteServiceProvider::class);
 

@@ -20,7 +20,7 @@ class RejectReviewRequest extends FormRequest {
     public function rules(): array
     {
         return [
-            'reason' => 'required|string|max:500'
+            'rejection_reason' => 'required|string|max:500'
         ];
     }
 

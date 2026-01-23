@@ -53,7 +53,7 @@ class ReviewCrudController extends Controller {
             return Response::api(message: __('Review already rejected.'), code: 400);
         }
 
-        $r = $action->handle($review, $request->input('reason'));
+        $r = $action->handle($review, $request->input('rejection_reason'));
 
         return Response::api(data: $r, message: __('Review rejected successfully.'));
     }
